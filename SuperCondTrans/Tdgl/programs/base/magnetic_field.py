@@ -17,7 +17,7 @@ def uniform(x, y, parameters):
     -       Bz (float, numpy.ndarray[?, 1]): z-Magnetic Field
 
     Used by:
-    - base.initialize.make_magnetic_field
+    - base.make.make_magnetic_field
     '''
 
     # Magnetic Field
@@ -42,7 +42,7 @@ def domains(x, y, parameters):
     -       Bz (float, numpy.ndarray[?, 1]): z-Magnetic Field
 
     Used by:
-    - base.initialize.make_magnetic_field
+    - base.make.make_magnetic_field
     - base.magnetic_field.plateau
     '''
 
@@ -76,7 +76,7 @@ def plateau(x, y, parameters):
     -       Bz (float, numpy.ndarray[?, 1]): z-Magnetic Field
 
     Used by:
-    - base.initialize.make_magnetic_field 
+    - base.make.make_magnetic_field 
     '''
 
     # Magnetic Field

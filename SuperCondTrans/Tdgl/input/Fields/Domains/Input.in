@@ -1,7 +1,0 @@
-# Magnetic Field Parameters
-B0       : 500.0
-k        : 10
-Ld       : 1.0
-θ        : π/2
-φ        : 0
-B_offset : 0

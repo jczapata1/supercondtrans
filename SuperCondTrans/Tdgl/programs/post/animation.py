@@ -100,4 +100,7 @@ def animation(path, n):
         frames    = [Image.open(os.path.join(folder, subfolder, f'{i:03d}.{img_fmt}')) for i in range(n)]
         frames[0].save(os.path.join(path, f'{subfolder}.gif'), save_all=True, append_images=frames[1:], duration=250, loop=0)
 
+    # Delete
+    shutil.rmtree(folder)
+
     return None

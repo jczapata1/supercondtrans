@@ -1,12 +1,11 @@
 # TDGL Simulation
 from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_current_voltage
-from programs.base.load import load_device, load_magnetic_field, load_vector_potential
-from programs.base.initialize import read_parameters
-from programs.base.physics import set_current
+from programs.base.transport import set_current
 from programs.base.run import point, sweep
+from programs.base.load import load_setup
 from programs.utils import *
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------
 
 # TDGL Simulation
 class TDGLSimulation:
@@ -26,12 +25,13 @@ class TDGLSimulation:
         self.folder = (folder or os.path.join('.', 'output', 'Default'))
 
         # Shared
-        self.parameters        = None
-        self.device            = None
-        self.magnetic_field    = None
-        self.vector_potential  = None
-        self.current           = None
-        self.simulation        = None
+        self.parameters       = None
+        self.device           = None
+        self.epsilon          = None
+        self.magnetic_field   = None
+        self.vector_potential = None
+        self.current          = None
+        self.simulation       = None
         
         # Point
         self.solution             = None
@@ -51,32 +51,14 @@ class TDGLSimulation:
         self.fig_current_voltage = None
 
     @benchmark
-    def read_parameters(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/initialize.py/read_parameters documentation.'''
-        self.parameters = read_parameters(file)
-        return None
-
-    @benchmark
-    def load_device(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/load.py/load_device documentation.'''
-        self.device = load_device(file)
-        return None
-
-    @benchmark
-    def load_magnetic_field(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/load.py/load_magnetic_field documentation.'''
-        self.magnetic_field = load_magnetic_field(file)
-        return None
-
-    @benchmark
-    def load_vector_potential(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/load.py/load_vector_potential documentation.'''
-        self.vector_potential = load_vector_potential(file, self.device)
+    def load_setup(self, folder):
+        '''Read SuperCondTrans/Tdgl/programs/base/load.py/load_setup documentation.'''
+        self.parameters, self.device, self.epsilon, self.magnetic_field, self.vector_potential = load_setup(folder)
         return None
 
     @benchmark
     def set_current(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/physics.py/set_current documentation.'''
+        '''Read SuperCondTrans/Tdgl/programs/base/transport.py/set_current documentation.'''
         self.current = set_current(file)
         return None
 
@@ -84,14 +66,16 @@ class TDGLSimulation:
     def point(self, simulation, seed_solution=None):
         '''Read SuperCondTrans/Tdgl/programs/base/run.py/point documentation.'''
         self.simulation             = simulation
-        self.solution, self.voltage = point(self.folder, self.simulation, self.parameters, self.device, self.vector_potential, self.current[0], seed_solution)
+        self.solution, self.voltage = point(self.folder, self.simulation, self.parameters['General'], self.device, 
+                                            self.epsilon, self.vector_potential, self.current[0], seed_solution)
         return None
 
     @benchmark
     def sweep(self, simulation, seed=False):
         '''Read SuperCondTrans/Tdgl/programs/base/run.py/sweep documentation.'''
         self.simulation               = simulation
-        self.solutions, self.voltages = sweep(self.folder, self.simulation, self.parameters, self.device, self.vector_potential, self.current, seed)
+        self.solutions, self.voltages = sweep(self.folder, self.simulation, self.parameters['General'], self.device, 
+                                              self.epsilon, self.vector_potential, self.current, seed)
         return None
 
     @benchmark

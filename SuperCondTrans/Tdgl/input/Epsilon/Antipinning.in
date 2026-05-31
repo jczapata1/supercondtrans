@@ -1,0 +1,7 @@
+# Epsilon Parameters
+N    : 100
+R    : 0.0054
+σR   : 0.0
+ε0   : 2.0
+σε   : 0.0
+seed : 0

@@ -30,7 +30,7 @@ def vector_potential(Bz_func, points, gauge):
     -                          Axy_func (callable): xy-Vector Potential
 
     Used by:
-    - base.initialize.make_vector_potential
+    - base.make.make_vector_potential
     '''
 
     # Auxiliary Grid

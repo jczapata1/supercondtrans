@@ -3,22 +3,23 @@
 λ0 : 0.200
 u0 : 5.79
 γ  : 1.0
-σ  : 1.0e6
+σ  : 1.0
 Lx : 2.000
 Ly : 0.400
 Lz : 0.010
 TC : 16.81
 
 # External Parameters
-T0  : 15.80
-NPP : 20
+T0       : 15.80
+NPP      : 20
+disorder : 'Pinning'
+dist     : 'Random'
+profile  : 'Uniform'
+gauge    : 'Landau-y'
 
-# Derived  Parameters
-ξ   : ξ0 * scaling_func(2, 1/2, TC, T0)
-λ   : λ0 * scaling_func(2, 1/2, TC, T0)
-κ   : λ/ξ
-Λ   : 2 * (λ**2/Lz)
-BC2 : 1e3 * φ0 / (2*π*(1e-6*ξ)**2)
+# Derived Parameters
+ξ : ξ0 * scaling_func(2, 1/2, TC, T0)
+λ : λ0 * scaling_func(2, 1/2, TC, T0)
 
 # Solver Parameters
 solve_time : 200

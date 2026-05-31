@@ -18,12 +18,13 @@ alp3_ = 1.0 # Default
 alp4_ = 0.5 # Lines
 
 # Colormaps
+cmap_eps      = 'RdBu'
+cmap_magfield = 'copper'
+cmap_vecpot   = 'copper'
 cmap_psi      = 'jet_r'
 cmap_phase    = 'afmhot'
 cmap_vort     = 'RdBu_r'
 cmap_scapot   = 'BrBG_r' 
-cmap_magfield = 'copper'
-cmap_vecpot   = 'copper'
 
 # Axes
 plt.rcParams['axes.labelsize']  = fs2_

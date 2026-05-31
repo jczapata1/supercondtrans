@@ -18,7 +18,7 @@ def plot_device(path, device, show=True, filename='Device'):
     - fig (matplotlib.figure.Figure): Device Figure
 
     Used by:
-    - tdgl_device.TDGLDevice.plot_device
+    - tdgl_setup.TDGLSetup.plot_device
     '''
 
     # Figure
@@ -27,6 +27,50 @@ def plot_device(path, device, show=True, filename='Device'):
     device.plot(mesh=True, legend=False, ax=ax)
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Mesh')
+    ax.set_aspect('equal')
+
+    # Save, Show, and Close
+    fig.savefig(os.path.join(path, f'{filename}.{img_fmt}'))
+    if (show == True): plt.show()
+    plt.close(fig)
+
+    return fig
+
+#-------------------------------------------------------------------------------------------------------------
+
+# Plot Epsilon
+def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
+    '''
+    Plot the epsilon profile.
+
+    Input:
+    -                           path (str): Output Folder Path
+    -                 device (tdgl.Device): TDGL Device
+    - epsilon (float, numpy.ndarray[?, 1]): Epsilon Profile
+    -                          show (bool): Show Plot
+    -                       filename (str): Output Filename
+
+    Output:
+    -       fig (matplotlib.figure.Figure): Epsilon Figure
+
+    Used by:
+    - tdgl_setup.TDGLSetup.plot_epsilon
+    '''
+
+    # Data
+    points = device.points
+    tri    = device.triangles
+    X, Y   = points[:, 0], points[:, 1]
+
+    # Figure
+    fig, ax = plt.subplots(1, 1, figsize=(9, 2))
+
+    im = ax.tripcolor(X, Y, epsilon, triangles=tri, cmap=cmap_eps, vmin=0, vmax=2)
+    fig.colorbar(im, ax=ax, label='$\\varepsilon(x,y)$', pad=0.02, shrink=0.6, ticks=[0, 1, 2])
+    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Epsilon')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -54,7 +98,7 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
     -              fig (matplotlib.figure.Figure): Magnetic Field Figure
 
     Used by:
-    - tdgl_fields.TDGLFields.plot_magnetic_field
+    - tdgl_setup.TDGLSetup.plot_magnetic_field
     '''
 
     # Data
@@ -69,6 +113,7 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
     fig.colorbar(im, ax=ax, label='$B_{z}(x,y)/B_{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Magnetic Field')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -96,7 +141,7 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
     -                fig (matplotlib.figure.Figure): Vector Potential Figure
 
     Used by:
-    - tdgl_fields.TDGLFields.plot_vector_potential
+    - tdgl_setup.TDGLSetup.plot_vector_potential
     '''
 
     # Data
@@ -111,6 +156,7 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
     fig.colorbar(im, ax=ax, label='$|\\vec{A}(x,y)|/A_{max}$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Vector Potential')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -154,6 +200,7 @@ def plot_psi(path, device, psi, show=True, filename='Psi'):
     fig.colorbar(im, ax=ax, label='$|\\psi(x,y,t)|$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Psi')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -198,6 +245,7 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
     cbar.set_ticklabels(['$-\\pi$', '$0$', '$\\pi$'])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Phase')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -241,6 +289,7 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
     fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega_{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Vorticity')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -289,6 +338,7 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     ax.add_patch(plt.Rectangle((Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Scalar Potential')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
