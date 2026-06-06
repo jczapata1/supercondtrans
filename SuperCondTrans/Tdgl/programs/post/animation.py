@@ -1,9 +1,9 @@
 # Animation
-from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential
+from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
 from programs.utils import *
 from PIL import Image
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Snapshots
 def snapshots(path, n, plot, device, solution):
@@ -27,7 +27,7 @@ def snapshots(path, n, plot, device, solution):
     '''
 
     # Validate
-    valid            = ['Psi', 'Phase', 'Vorticity', 'Scalar_Potential']
+    valid            = ['Psi', 'Phase', 'Vorticity', 'Normal_Current', 'Super_Current', 'Scalar_Potential']
     selected_folders = valid if (plot == 'All') else ([plot] if isinstance(plot, str) else list(plot))
     invalid          = [subfolder for subfolder in selected_folders if subfolder not in valid]
     if (invalid): 
@@ -44,35 +44,51 @@ def snapshots(path, n, plot, device, solution):
     t_min, t_max = solution.data_range
     time         = np.linspace(t_min, t_max, n, dtype=int)
 
-    # Global Normalization
-    ω_max = 1.0
-    μ_max = 1.0
-    for ti in time:
-        solution.solve_step = ti
-        
-        if ('Vorticity' in selected_folders): 
-            ω_max = max(ω_max, np.max(np.abs(solution.vorticity.magnitude)))
-        if ('Scalar_Potential' in selected_folders): 
-            μ_max = max(μ_max, np.max(np.abs(solution.tdgl_data.mu)))
-
-    # Plots
-    plotters = {
-        'Psi': lambda folder, i: plot_psi(folder, device, np.abs(solution.tdgl_data.psi), show=False, filename=f'{i:03d}'),
-        'Phase': lambda folder, i: plot_phase(folder, device, np.angle(solution.tdgl_data.psi), show=False, filename=f'{i:03d}'),
-        'Vorticity': lambda folder, i: plot_vorticity(folder, device, solution.vorticity.magnitude / ω_max, show=False, filename=f'{i:03d}'),
-        'Scalar_Potential': lambda folder, i: plot_scalar_potential(folder, device, solution.tdgl_data.mu / μ_max, show=False, filename=f'{i:03d}'),
-    }
-
     # Snapshots
     for (i, ti) in enumerate(time):
+
+        # Current Time
         solution.solve_step = ti
 
-        for subfolder in selected_folders:
-            plotters[subfolder](folders[subfolder], i)
+        # Physical Observables
+        Ψ  = np.abs(solution.tdgl_data.psi)
+        φ  = np.angle(solution.tdgl_data.psi)
+        ω  = solution.vorticity.magnitude
+        Kn = np.linalg.norm(solution.normal_current_density.magnitude, axis=1)
+        Ks = np.linalg.norm(solution.supercurrent_density.magnitude, axis=1)
+        μ  = solution.tdgl_data.mu
+
+        # Maximum    
+        ω_max  = np.max(np.abs(ω))
+        Kn_max = np.max(Kn)
+        Ks_max = np.max(Ks)
+        μ_max  = np.max(np.abs(μ))
+
+        # Normalization
+        psi_norm              = Ψ
+        phase_norm            = φ
+        vorticity_norm        = (ω / ω_max) if ω_max  > 0 else ω
+        normal_current_norm   = (Kn / Kn_max) if Kn_max > 0 else Kn
+        super_current_norm    = (Ks / Ks_max) if Ks_max > 0 else Ks
+        scalar_potential_norm = (μ / μ_max) if μ_max  > 0 else μ
+
+        # Plot
+        if ('Psi' in selected_folders): 
+            plot_psi(folders['Psi'], device, psi_norm, show=False, filename=f'{i:03d}')
+        if ('Phase' in selected_folders): 
+            plot_phase(folders['Phase'], device, phase_norm, show=False, filename=f'{i:03d}')
+        if ('Vorticity' in selected_folders): 
+            plot_vorticity(folders['Vorticity'], device, vorticity_norm, show=False, filename=f'{i:03d}')
+        if ('Normal_Current' in selected_folders): 
+            plot_normal_current(folders['Normal_Current'], device, normal_current_norm, show=False, filename=f'{i:03d}')
+        if ('Super_Current' in selected_folders): 
+            plot_super_current(folders['Super_Current'], device, super_current_norm, show=False, filename=f'{i:03d}')
+        if ('Scalar_Potential' in selected_folders): 
+            plot_scalar_potential(folders['Scalar_Potential'], device, scalar_potential_norm, show=False, filename=f'{i:03d}')
 
     return None
 
-#----------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Animate
 def animation(path, n):

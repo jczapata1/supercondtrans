@@ -1,7 +1,7 @@
 # Plot
 from programs.utils import *
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Device
 def plot_device(path, device, show=True, filename='Device'):
@@ -37,7 +37,7 @@ def plot_device(path, device, show=True, filename='Device'):
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Epsilon
 def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
@@ -80,7 +80,7 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Magnetic Field
 def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magnetic_Field'):
@@ -123,7 +123,7 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Vector Potential
 def plot_vector_potential(path, device, vector_potential, show=True, filename='Vector_Potential'):
@@ -166,7 +166,7 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Psi
 def plot_psi(path, device, psi, show=True, filename='Psi'):
@@ -210,7 +210,7 @@ def plot_psi(path, device, psi, show=True, filename='Psi'):
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Phase
 def plot_phase(path, device, phase, show=True, filename='Phase'):
@@ -255,7 +255,7 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Vorticity
 def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
@@ -286,7 +286,7 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, vorticity, triangles=tri, cmap=cmap_vort, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega_{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega_{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
     ax.set_title('Vorticity')
@@ -299,7 +299,95 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
+
+# Plot Normal Current
+def plot_normal_current(path, device, Kn, show=True, filename='Normal_Current'):
+    '''
+    Plot the normal current density magnitude profile.
+
+    Input:
+    -                      path (str): Output Folder Path
+    -            device (tdgl.Device): TDGL Device
+    - Kn (float, numpy.ndarray[?, 1]): Normal Current Density Magnitude
+    -                     show (bool): Show Plot
+    -                  filename (str): Output Filename
+
+    Output:
+    -  fig (matplotlib.figure.Figure): Normal Current Density Figure
+
+    Used by:
+    - tdgl_simulation.TDGLSimulation.plot_normal_current
+    - post.animation.snapshots
+    '''
+
+    # Data
+    points = device.points
+    tri    = device.triangles
+    X, Y   = points[:, 0], points[:, 1]
+
+    # Figure
+    fig, ax = plt.subplots(1, 1, figsize=(9, 2))
+
+    im = ax.tripcolor(X, Y, np.log1p(Kn)/np.log(2), triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{n}(x,y,t)|}{K_{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Normal Current Density')
+    ax.set_aspect('equal')
+
+    # Save, Show, and Close
+    fig.savefig(os.path.join(path, f'{filename}.{img_fmt}'))
+    if (show == True): plt.show()
+    plt.close(fig)
+
+    return fig
+
+#--------------------------------------------------------------------------------------------------------------------------------------------
+
+# Plot Supercurrent
+def plot_super_current(path, device, Ks, show=True, filename='Supercurrent'):
+    '''
+    Plot the supercurrent density magnitude profile.
+
+    Input:
+    -                      path (str): Output Folder Path
+    -            device (tdgl.Device): TDGL Device
+    - Ks (float, numpy.ndarray[?, 1]): Supercurrent Density Magnitude
+    -                     show (bool): Show Plot
+    -                  filename (str): Output Filename
+
+    Output:
+    -  fig (matplotlib.figure.Figure): Supercurrent Density Figure
+
+    Used by:
+    - tdgl_simulation.TDGLSimulation.plot_super_current
+    - post.animation.snapshots
+    '''
+
+    # Data
+    points = device.points
+    tri    = device.triangles
+    X, Y   = points[:, 0], points[:, 1]
+
+    # Figure
+    fig, ax = plt.subplots(1, 1, figsize=(9, 2))
+
+    im = ax.tripcolor(X, Y, np.log1p(Ks)/np.log(2), triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{s}(x,y,t)|}{K_{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_title('Supercurrent Density')
+    ax.set_aspect('equal')
+
+    # Save, Show, and Close
+    fig.savefig(os.path.join(path, f'{filename}.{img_fmt}'))
+    if (show == True): plt.show()
+    plt.close(fig)
+
+    return fig
+
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Scalar Potential
 def plot_scalar_potential(path, device, scalar_potential, show=True, filename='Scalar_Potential'):
@@ -333,7 +421,7 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, scalar_potential, triangles=tri, cmap=cmap_scapot, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu_{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu_{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.add_patch(plt.Rectangle((-Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.add_patch(plt.Rectangle((Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
@@ -348,7 +436,7 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
 
     return fig
 
-#-------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Current-Voltage
 def plot_current_voltage(path, currents, voltages, show=True, filename='Current_Voltage'):

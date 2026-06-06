@@ -67,8 +67,8 @@ class TDGLSetup:
 
     @benchmark
     def plot_vector_potential(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_vector_potential documentation.'''
-        A                         = np.sqrt(self.vector_potential[:, 0]**2 + self.vector_potential[:, 1]**2)
+        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_vector_potential documentation.'''       
+        A                         = np.linalg.norm(self.vector_potential, axis=1)
         A_max                     = np.max(A)
         A_amp                     = (A / A_max) if A_max > 0 else A
         self.fig_vector_potential = plot_vector_potential(self.folder, self.device, A_amp)

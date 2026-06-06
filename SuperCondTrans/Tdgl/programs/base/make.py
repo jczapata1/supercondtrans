@@ -238,12 +238,12 @@ def make_epsilon(path, parameters, device):
     # Disorder
     r = rng.lognormal(np.log(R), σR, Xp.shape)
     ε = rng.normal(ε0, σε, Xp.shape)
-    ε = np.clip(ε, 0.0, 1.0) if (ε0 <= 1.0) else np.clip(ε, 1.0, 2.0)
+    ε = np.clip(ε, -1.0, max(ε0, 1.0))
 
     # Epsilon
     d     = np.sqrt((Xp - X)**2 + (Yp - Y)**2)
     gauss = (ε - 1) * np.exp(-(d**2 / (2*r**2)))
-    ε     = np.clip(1 + gauss.sum(axis=0), 0.0, 2.0)
+    ε     = np.clip(1 + gauss.sum(axis=0), -1.0, max(float(ε0), 1.0))
 
     return ε
 

@@ -24,6 +24,7 @@ cmap_vecpot   = 'copper'
 cmap_psi      = 'jet_r'
 cmap_phase    = 'afmhot'
 cmap_vort     = 'RdBu_r'
+cmap_current  = 'inferno'
 cmap_scapot   = 'BrBG_r' 
 
 # Axes

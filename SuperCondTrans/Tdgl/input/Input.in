@@ -13,7 +13,7 @@ TC : 16.81
 T0       : 15.80
 NPP      : 20
 disorder : 'Pinning'
-dist     : 'Random'
+dist     : 'Hexagonal'
 profile  : 'Uniform'
 gauge    : 'Landau-y'
 

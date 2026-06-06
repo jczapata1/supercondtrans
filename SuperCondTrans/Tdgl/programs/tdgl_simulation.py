@@ -1,11 +1,11 @@
 # TDGL Simulation
-from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_current_voltage
+from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
 from programs.base.transport import set_current
 from programs.base.run import point, sweep
 from programs.base.load import load_setup
 from programs.utils import *
 
-#-------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # TDGL Simulation
 class TDGLSimulation:
@@ -42,6 +42,10 @@ class TDGLSimulation:
         self.fig_phase            = None
         self.vorticity            = None
         self.fig_vorticity        = None
+        self.normal_current       = None
+        self.fig_normal_current   = None
+        self.super_current        = None
+        self.fig_super_current    = None
         self.scalar_potential     = None
         self.fig_scalar_potential = None
 
@@ -99,6 +103,24 @@ class TDGLSimulation:
         ω_max              = np.max(np.abs(self.vorticity))
         ω                  = (self.vorticity / ω_max) if ω_max > 0 else self.vorticity
         self.fig_vorticity = plot_vorticity(self.folder, self.device, ω)
+        return None
+
+    @benchmark
+    def plot_normal_current(self):
+        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_normal_current documentation.'''
+        self.normal_current     = np.linalg.norm(self.solution.normal_current_density.magnitude, axis=1)
+        Kn_max                  = np.max(self.normal_current)
+        Kn                      = (self.normal_current / Kn_max) if Kn_max > 0 else self.normal_current
+        self.fig_normal_current = plot_normal_current(self.folder, self.device, Kn)
+        return None
+
+    @benchmark
+    def plot_super_current(self):
+        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_super_current documentation.'''
+        self.super_current     = np.linalg.norm(self.solution.supercurrent_density.magnitude, axis=1)
+        Ks_max                 = np.max(self.super_current)
+        Ks                     = (self.super_current / Ks_max) if Ks_max > 0 else self.super_current
+        self.fig_super_current = plot_super_current(self.folder, self.device, Ks)
         return None
 
     @benchmark
