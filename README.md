@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/Version-1.3.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/Version-1.4.0-brightgreen.svg)
 ![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?logo=python&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-26.04-E95420.svg?logo=ubuntu&logoColor=white)
 </div>
@@ -39,6 +39,7 @@ pip install -r requirements.txt
 * v1.1.0: TDGL Module → Upgrade + Pinning (05/31/2026).
 * v1.2.0: TDGL Module → Normal Current + Supercurrent (06/07/2026).
 * v1.3.0: TDGL Module → Plots and Readme Upgrades (06/13/2026).
+* v1.4.0: TDGL1D Module → Base Code (06/13/2026).
 
 ## Copyright and License
 

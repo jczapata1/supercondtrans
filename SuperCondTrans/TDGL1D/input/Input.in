@@ -1,0 +1,26 @@
+# Material Parameters
+ξ0 : 5.4e-9
+u  : 5.79
+γ  : 0.001
+Ly : 5.0e-6
+Ny : 1000
+TC : 16.81
+
+# External Parameters
+T0 : 15.80
+
+# Derived Parameters
+ξ   : ξ0 * scaling_func(2, 1/2, TC, T0)
+τGL : (π*ħ) / (8*KB*(TC - T0))
+
+# Vortex Parameters
+V0   : 15.0
+v    : 0.5 * (ξ/τGL)
+mode : 'Train'
+Nv   : 20
+a    : Ly/5
+
+# Solver Parameters
+dt         : 0.1 * τGL
+Nt         : int(Ly / (v*dt))
+save_every : 200
