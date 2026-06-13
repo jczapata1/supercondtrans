@@ -4,7 +4,7 @@
 One-dimensional simulation of the order parameter magnitude under a moving vortex-like potential. Solves:
 </p>
 
-$$u\,\tau_{GL}\sqrt{1+\gamma^2 f^2}\,\frac{\partial f}{\partial t} = \xi^2\frac{\partial^2 f}{\partial y^2} + \left[(1-f^2) - V(y, t)\right]f,$$
+$$u\,\tau_{GL}\sqrt{1+\gamma^2 f^2}\,\frac{\partial f}{\partial t} = \xi^2\frac{\partial^2 f}{\partial y^2} + \left[(1-f^2) - V\right]f,$$
 
 with (in SI units):
 
