@@ -39,7 +39,7 @@ pip install -r requirements.txt
 * v1.1.0: TDGL Module → Upgrade + Pinning (05/31/2026).
 * v1.2.0: TDGL Module → Normal Current + Supercurrent (06/07/2026).
 * v1.3.0: TDGL Module → Plots and Readme Upgrades (06/13/2026).
-* v1.4.1: TDGL1D Module → Base Code (06/13/2026).
+* v1.4.2: TDGL1D Module → Base Code (06/13/2026).
 
 ## Copyright and License
 

@@ -1,0 +1,31 @@
+# Material Parameters
+ξ0 : 0.0054
+λ0 : 0.200
+u  : 5.79
+γ  : 1.0
+σ  : 1.0
+Lx : 2.000
+Ly : 0.400
+Lz : 0.010
+TC : 16.81
+
+# External Parameters
+T0       : 15.80
+NPP      : 20
+disorder : 'Pinning'
+dist     : 'Hexagonal'
+profile  : 'Uniform'
+gauge    : 'Landau-y'
+
+# Derived Parameters
+ξ : ξ0 * scaling_func(2, 1/2, TC, T0)
+λ : λ0 * scaling_func(2, 1/2, TC, T0)
+
+# Solver Parameters
+solve_time : 200
+save_every : 100
+skip_time  : 200
+dt_init    : 1e-4
+dt_max     : 1e-1
+screening  : False
+gpu        : False

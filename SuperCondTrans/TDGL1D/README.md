@@ -13,9 +13,9 @@ with (in SI units):
 | $u$         | Relaxation Parameter            | 
 | $\gamma$    | Inelastic Scattering Parameter  |
 | $\tau_{GL}$ | Ginzburg-Landau Relaxation Time |
-| $f(y, t) $  | Order Parameter Magnitude       |
+| $f(y, t)$   | Order Parameter Magnitude       |
 | $\xi$       | Coherence Length                |
-| $V(y, t)$   | Vortex-Like Potential           |
+| $V(y-vt)$   | Vortex-Like Potential           |
 | $v$         | Vortex Velocity                 |
 
 <p align="justify">
