@@ -18,10 +18,10 @@ def point(path, simulation, parameters, device, ε, Axy, current, seed_solution)
     -    ε (float, numpy.ndarray[?, 1]): Epsilon Profile
     -                    Axy (callable): xy-Vector Potential
     -                   current (float): Transport Current
-    -     seed_solution (tdgl.Solution): Seed Solution
+    -     seed_solution (TDGL.Solution): Seed Solution
 
     Output:
-    -          solution (tdgl.Solution): TDGL Solution
+    -          solution (TDGL.Solution): TDGL Solution
     -                   voltage (float): Voltage
     - Transport.txt
 
@@ -70,7 +70,7 @@ def sweep(path, simulation, parameters, device, ε, Axy, currents, seed):
     -                           seed (bool): Seed Solutions
 
     Output:
-    - solutions (tdgl.Solution, list[?, 1]): TDGL Solutions
+    - solutions (TDGL.Solution, list[?, 1]): TDGL Solutions
     -        voltages (numpy.ndarray[?, 1]): Voltages
     - Transport.txt
 

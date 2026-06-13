@@ -11,6 +11,10 @@ fs0_ = 5.0  # Text
 fs1_ = 6.5  # Legend, Title, x-Ticks, y-Ticks
 fs2_ = 8.0  # x-Label, y-Label 
 
+# Markers
+me_ = 1.5 # Edgewidth
+ms_ = 3.0 # Size
+
 # Opacity
 alp1_ = 0.3 # Grid
 alp2_ = 0.2 # Vertical/Horizontal Lines
@@ -32,7 +36,7 @@ plt.rcParams['axes.labelsize']  = fs2_
 plt.rcParams['axes.titlesize']  = fs2_
 plt.rcParams['legend.fontsize'] = fs1_
 
-# Tick
+# Ticks
 plt.rcParams['xtick.labelsize']  = fs1_
 plt.rcParams['ytick.labelsize']  = fs1_
 plt.rcParams['xtick.bottom']     = True

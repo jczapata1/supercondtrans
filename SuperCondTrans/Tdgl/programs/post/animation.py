@@ -15,7 +15,7 @@ def snapshots(path, n, plot, device, solution):
     -                  n (int): Number Of Snapshots
     -       plot (str or list): Observables to Snapshots
     -     device (tdgl.Device): TDGL Device
-    - solution (tdgl.Solution): TDGL Solution
+    - solution (TDGL.Solution): TDGL Solution
 
     Output:
     - None
@@ -51,40 +51,26 @@ def snapshots(path, n, plot, device, solution):
         solution.solve_step = ti
 
         # Physical Observables
-        Ψ  = np.abs(solution.tdgl_data.psi)
-        φ  = np.angle(solution.tdgl_data.psi)
-        ω  = solution.vorticity.magnitude
-        Kn = np.linalg.norm(solution.normal_current_density.magnitude, axis=1)
-        Ks = np.linalg.norm(solution.supercurrent_density.magnitude, axis=1)
-        μ  = solution.tdgl_data.mu
-
-        # Maximum    
-        ω_max  = np.max(np.abs(ω))
-        Kn_max = np.max(Kn)
-        Ks_max = np.max(Ks)
-        μ_max  = np.max(np.abs(μ))
-
-        # Normalization
-        psi_norm              = Ψ
-        phase_norm            = φ
-        vorticity_norm        = (ω / ω_max) if ω_max  > 0 else ω
-        normal_current_norm   = (Kn / Kn_max) if Kn_max > 0 else Kn
-        super_current_norm    = (Ks / Ks_max) if Ks_max > 0 else Ks
-        scalar_potential_norm = (μ / μ_max) if μ_max  > 0 else μ
+        psi              = np.abs(solution.tdgl_data.psi)
+        phase            = np.angle(solution.tdgl_data.psi)
+        vorticity        = solution.vorticity.magnitude
+        normal_current   = np.linalg.norm(solution.normal_current_density.magnitude, axis=1)
+        super_current    = np.linalg.norm(solution.supercurrent_density.magnitude, axis=1)
+        scalar_potential = device.V0().to('mV').magnitude  * solution.tdgl_data.mu
 
         # Plot
         if ('Psi' in selected_folders): 
-            plot_psi(folders['Psi'], device, psi_norm, show=False, filename=f'{i:03d}')
+            plot_psi(folders['Psi'], device, psi, show=False, filename=f'{i:04d}')
         if ('Phase' in selected_folders): 
-            plot_phase(folders['Phase'], device, phase_norm, show=False, filename=f'{i:03d}')
+            plot_phase(folders['Phase'], device, phase, show=False, filename=f'{i:04d}')
         if ('Vorticity' in selected_folders): 
-            plot_vorticity(folders['Vorticity'], device, vorticity_norm, show=False, filename=f'{i:03d}')
+            plot_vorticity(folders['Vorticity'], device, vorticity, show=False, filename=f'{i:04d}')
         if ('Normal_Current' in selected_folders): 
-            plot_normal_current(folders['Normal_Current'], device, normal_current_norm, show=False, filename=f'{i:03d}')
+            plot_normal_current(folders['Normal_Current'], device, normal_current, show=False, filename=f'{i:04d}')
         if ('Super_Current' in selected_folders): 
-            plot_super_current(folders['Super_Current'], device, super_current_norm, show=False, filename=f'{i:03d}')
+            plot_super_current(folders['Super_Current'], device, super_current, show=False, filename=f'{i:04d}')
         if ('Scalar_Potential' in selected_folders): 
-            plot_scalar_potential(folders['Scalar_Potential'], device, scalar_potential_norm, show=False, filename=f'{i:03d}')
+            plot_scalar_potential(folders['Scalar_Potential'], device, scalar_potential, show=False, filename=f'{i:04d}')
 
     return None
 
@@ -113,8 +99,8 @@ def animation(path, n):
 
     # Animate
     for subfolder in subfolders:
-        frames    = [Image.open(os.path.join(folder, subfolder, f'{i:03d}.{img_fmt}')) for i in range(n)]
-        frames[0].save(os.path.join(path, f'{subfolder}.gif'), save_all=True, append_images=frames[1:], duration=250, loop=0)
+        frames = [Image.open(os.path.join(folder, subfolder, f'{i:04d}.{img_fmt}')) for i in range(n)]
+        frames[0].save(os.path.join(path, f'{subfolder}.gif'), save_all=True, append_images=frames[1:], duration=200, loop=0)
 
     # Delete
     shutil.rmtree(folder)

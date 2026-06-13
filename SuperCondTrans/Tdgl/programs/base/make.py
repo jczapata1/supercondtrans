@@ -161,7 +161,7 @@ def make_device(path, parameters):
     # Parameters
     ξ   = parameters['ξ']
     λ   = parameters['λ']
-    u0  = parameters['u0']
+    u   = parameters['u']
     γ   = parameters['γ']
     σ   = parameters['σ']
     Lx  = parameters['Lx']
@@ -170,7 +170,7 @@ def make_device(path, parameters):
     NPP = parameters['NPP']
 
     # Geometry and Boundaries
-    layer  = tdgl.Layer(coherence_length=ξ, london_lambda=λ, thickness=Lz, u=u0, gamma=γ, conductivity=σ)
+    layer  = tdgl.Layer(coherence_length=ξ, london_lambda=λ, thickness=Lz, u=u, gamma=γ, conductivity=σ)
     film   = tdgl.Polygon('film', points=box(Lx, Ly))
     source = tdgl.Polygon('source', points=box(ξ, Ly)).translate(dx=-Lx/2)
     drain  = tdgl.Polygon('drain', points=box(ξ, Ly)).translate(dx=+Lx/2)

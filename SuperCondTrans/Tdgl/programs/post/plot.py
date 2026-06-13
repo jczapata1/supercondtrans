@@ -1,7 +1,7 @@
 # Plot
 from programs.utils import *
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Device
 def plot_device(path, device, show=True, filename='Device'):
@@ -47,7 +47,7 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
     Input:
     -                           path (str): Output Folder Path
     -                 device (tdgl.Device): TDGL Device
-    - epsilon (float, numpy.ndarray[?, 1]): Epsilon Profile
+    - epsilon (float, numpy.ndarray[?, 1]): Epsilon
     -                          show (bool): Show Plot
     -                       filename (str): Output Filename
 
@@ -58,15 +58,18 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
     - tdgl_setup.TDGLSetup.plot_epsilon
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    ε = epsilon
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, epsilon, triangles=tri, cmap=cmap_eps, vmin=0, vmax=2)
+    im = ax.tripcolor(X, Y, ε, triangles=tri, cmap=cmap_eps, vmin=0, vmax=2)
     fig.colorbar(im, ax=ax, label='$\\varepsilon(x,y)$', pad=0.02, shrink=0.6, ticks=[0, 1, 2])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
@@ -80,7 +83,7 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Magnetic Field
 def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magnetic_Field'):
@@ -101,19 +104,23 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
     - tdgl_setup.TDGLSetup.plot_magnetic_field
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    Bz_max = np.max(np.abs(magnetic_field))
+    Bz     = (magnetic_field / Bz_max) if Bz_max > 0 else magnetic_field    
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, magnetic_field, triangles=tri, cmap=cmap_magfield, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$B_{z}(x,y)/B_{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    im = ax.tripcolor(X, Y, Bz, triangles=tri, cmap=cmap_magfield, vmin=-1, vmax=1)
+    fig.colorbar(im, ax=ax, label='$B_{z}(x,y)/B^{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Magnetic Field')
+    ax.set_title(f'Magnetic Field - $B^{{max}}={Bz_max:0.1f}$ mT')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -123,7 +130,7 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Vector Potential
 def plot_vector_potential(path, device, vector_potential, show=True, filename='Vector_Potential'):
@@ -131,32 +138,37 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
     Plot the xy-vector potential amplitude profile.
 
     Input:
-    -                                    path (str): Output Folder Path
-    -                          device (tdgl.Device): TDGL Device
-    - vector_potential (float, numpy.ndarray[?, 1]): xy-Vector Potential Amplitude
-    -                                   show (bool): Show Plot
-    -                                filename (str): Output Filename
+    -                                             path (str): Output Folder Path
+    -                                   device (tdgl.Device): TDGL Device
+    - vector_potential ((float, float), numpy.ndarray[?, 2]): xy-Vector Potential
+    -                                            show (bool): Show Plot
+    -                                         filename (str): Output Filename
 
     Output:
-    -                fig (matplotlib.figure.Figure): Vector Potential Figure
+    -                         fig (matplotlib.figure.Figure): Vector Potential Figure
 
     Used by:
     - tdgl_setup.TDGLSetup.plot_vector_potential
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    A     = np.linalg.norm(vector_potential, axis=1)
+    A_max = np.max(A)
+    A_amp = (A / A_max) if A_max > 0 else A
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, vector_potential, triangles=tri, cmap=cmap_vecpot, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\vec{A}(x,y)|/A_{max}$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    im = ax.tripcolor(X, Y, A_amp, triangles=tri, cmap=cmap_vecpot, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$|\\vec{A}(x,y)|/A^{max}$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Vector Potential')
+    ax.set_title(f'Vector Potential - $A^{{max}}={A_max:0.1f}$ mT·µm')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -166,7 +178,7 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Psi
 def plot_psi(path, device, psi, show=True, filename='Psi'):
@@ -188,15 +200,18 @@ def plot_psi(path, device, psi, show=True, filename='Psi'):
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    Ψ = psi
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, psi, triangles=tri, cmap=cmap_psi, vmin=0, vmax=1)
+    im = ax.tripcolor(X, Y, Ψ, triangles=tri, cmap=cmap_psi, vmin=0, vmax=1)
     fig.colorbar(im, ax=ax, label='$|\\psi(x,y,t)|$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
@@ -210,7 +225,7 @@ def plot_psi(path, device, psi, show=True, filename='Psi'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Phase
 def plot_phase(path, device, phase, show=True, filename='Phase'):
@@ -232,15 +247,18 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    φ = phase   
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, phase, triangles=tri, cmap=cmap_phase, vmin=-π, vmax=π)
+    im = ax.tripcolor(X, Y, φ, triangles=tri, cmap=cmap_phase, vmin=-π, vmax=π)
     cbar = fig.colorbar(im, ax=ax, label='$\\varphi(x,y,t)$', pad=0.02, shrink=0.6, ticks=[-π, 0, π])
     cbar.set_ticklabels(['$-\\pi$', '$0$', '$\\pi$'])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
@@ -255,7 +273,7 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Vorticity
 def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
@@ -277,19 +295,23 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    ω_max = np.max(np.abs(vorticity))
+    ω     = (vorticity / ω_max) if ω_max > 0 else vorticity
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, vorticity, triangles=tri, cmap=cmap_vort, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega_{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    im = ax.tripcolor(X, Y, ω, triangles=tri, cmap=cmap_vort, vmin=-1, vmax=1)
+    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega^{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Vorticity')
+    ax.set_title(f'Vorticity - $\\omega^{{max}}(t)={ω_max:0.1f}$ µA/µm²')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -299,41 +321,46 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Normal Current
-def plot_normal_current(path, device, Kn, show=True, filename='Normal_Current'):
+def plot_normal_current(path, device, normal_current, show=True, filename='Normal_Current'):
     '''
     Plot the normal current density magnitude profile.
 
     Input:
-    -                      path (str): Output Folder Path
-    -            device (tdgl.Device): TDGL Device
-    - Kn (float, numpy.ndarray[?, 1]): Normal Current Density Magnitude
-    -                     show (bool): Show Plot
-    -                  filename (str): Output Filename
+    -                                  path (str): Output Folder Path
+    -                        device (tdgl.Device): TDGL Device
+    - normal_current (float, numpy.ndarray[?, 1]): Normal Current Density Magnitude
+    -                                 show (bool): Show Plot
+    -                              filename (str): Output Filename
 
     Output:
-    -  fig (matplotlib.figure.Figure): Normal Current Density Figure
+    -              fig (matplotlib.figure.Figure): Normal Current Density Figure
 
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_normal_current
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    Kn_max = np.max(normal_current)
+    Kn     = (normal_current / Kn_max) if Kn_max > 0 else normal_current
+    Kn_log = np.log1p(Kn)/np.log(2)
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, np.log1p(Kn)/np.log(2), triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{n}(x,y,t)|}{K_{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    im = ax.tripcolor(X, Y, Kn_log, triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{n}(x,y,t)|}{K_{n}^{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Normal Current Density')
+    ax.set_title(f'Normal Current Density - $K_{{n}}^{{max}}(t)$={Kn_max:0.1f} µA/µm')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -343,41 +370,46 @@ def plot_normal_current(path, device, Kn, show=True, filename='Normal_Current'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Supercurrent
-def plot_super_current(path, device, Ks, show=True, filename='Supercurrent'):
+def plot_super_current(path, device, super_current, show=True, filename='Supercurrent'):
     '''
     Plot the supercurrent density magnitude profile.
 
     Input:
-    -                      path (str): Output Folder Path
-    -            device (tdgl.Device): TDGL Device
-    - Ks (float, numpy.ndarray[?, 1]): Supercurrent Density Magnitude
-    -                     show (bool): Show Plot
-    -                  filename (str): Output Filename
+    -                                 path (str): Output Folder Path
+    -                       device (tdgl.Device): TDGL Device
+    - super_current (float, numpy.ndarray[?, 1]): Supercurrent Density Magnitude
+    -                                show (bool): Show Plot
+    -                             filename (str): Output Filename
 
     Output:
-    -  fig (matplotlib.figure.Figure): Supercurrent Density Figure
+    -             fig (matplotlib.figure.Figure): Supercurrent Density Figure
 
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_super_current
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
 
+    # Profile
+    Ks_max = np.max(super_current)
+    Ks     = (super_current / Ks_max) if Ks_max > 0 else super_current
+    Ks_log = np.log1p(Ks)/np.log(2)
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, np.log1p(Ks)/np.log(2), triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{s}(x,y,t)|}{K_{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    im = ax.tripcolor(X, Y, Ks_log, triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{s}(x,y,t)|}{K_{s}^{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Supercurrent Density')
+    ax.set_title(f'Supercurrent Density - $K_{{s}}^{{max}}(t)$={Ks_max:0.1f} µA/µm')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -387,7 +419,7 @@ def plot_super_current(path, device, Ks, show=True, filename='Supercurrent'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Scalar Potential
 def plot_scalar_potential(path, device, scalar_potential, show=True, filename='Scalar_Potential'):
@@ -409,7 +441,7 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     - post.animation.snapshots
     '''
 
-    # Data
+    # Mesh
     points = device.points
     tri    = device.triangles
     X, Y   = points[:, 0], points[:, 1]
@@ -417,16 +449,20 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     Ly     = Y.max() - Y.min()
     w      = Lx / 200
 
+    # Profile
+    μ_max = np.max(np.abs(scalar_potential))
+    μ     = (scalar_potential / μ_max) if μ_max > 0 else scalar_potential
+
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, scalar_potential, triangles=tri, cmap=cmap_scapot, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu_{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    im = ax.tripcolor(X, Y, μ, triangles=tri, cmap=cmap_scapot, vmin=-1, vmax=1)
+    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu^{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.add_patch(plt.Rectangle((-Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.add_patch(plt.Rectangle((Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
     ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Scalar Potential')
+    ax.set_title(f'Scalar Potential - $\\mu^{{max}}(t)$={μ_max:0.3f} mV')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -436,7 +472,7 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Current-Voltage
 def plot_current_voltage(path, currents, voltages, show=True, filename='Current_Voltage'):
@@ -460,7 +496,7 @@ def plot_current_voltage(path, currents, voltages, show=True, filename='Current_
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(3, 2))
 
-    ax.scatter(currents, voltages, color='black', s=10, marker='o', facecolors='none')
+    ax.plot(currents, voltages, '-o', color='gray', linewidth=lw_, markerfacecolor='white', markeredgecolor='gray', markeredgewidth=me_, markersize=ms_)
     ax.set_xlabel('Current [μA]')
     ax.set_ylabel('Voltage [mV]')
 

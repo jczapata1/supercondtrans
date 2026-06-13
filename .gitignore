@@ -8,7 +8,7 @@ __pycache__/
 
 # Data
 *.h5
-!SuperCondTrans/Tdgl/input/**/*.h5
+!SuperCondTrans/TDGL/input/**/*.h5
 *.zip
 
 # Claude
@@ -16,10 +16,11 @@ __pycache__/
 CLAUDE.md
 
 # Internal Info
-SuperCondTrans/Tdgl/dev/
+SuperCondTrans/TDGL/dev/
 
 # Future
 SuperCondTrans/Current-Voltage/
 SuperCondTrans/Measurements/
 SuperCondTrans/Phase-Diagram/
 SuperCondTrans/Resistance/
+SuperCondTrans/TDGL1D/

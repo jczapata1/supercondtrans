@@ -23,6 +23,7 @@ class TDGLSimulation:
 
         # Primary
         self.folder = (folder or os.path.join('.', 'output', 'Default'))
+        clean(self.folder)
 
         # Shared
         self.parameters       = None
@@ -56,19 +57,19 @@ class TDGLSimulation:
 
     @benchmark
     def load_setup(self, folder):
-        '''Read SuperCondTrans/Tdgl/programs/base/load.py/load_setup documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/load.py/load_setup documentation.'''
         self.parameters, self.device, self.epsilon, self.magnetic_field, self.vector_potential = load_setup(folder)
         return None
 
     @benchmark
     def set_current(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/transport.py/set_current documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/transport.py/set_current documentation.'''
         self.current = set_current(file)
         return None
 
     @benchmark
     def point(self, simulation, seed_solution=None):
-        '''Read SuperCondTrans/Tdgl/programs/base/run.py/point documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/run.py/point documentation.'''
         self.simulation             = simulation
         self.solution, self.voltage = point(self.folder, self.simulation, self.parameters['General'], self.device, 
                                             self.epsilon, self.vector_potential, self.current[0], seed_solution)
@@ -76,7 +77,7 @@ class TDGLSimulation:
 
     @benchmark
     def sweep(self, simulation, seed=False):
-        '''Read SuperCondTrans/Tdgl/programs/base/run.py/sweep documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/run.py/sweep documentation.'''
         self.simulation               = simulation
         self.solutions, self.voltages = sweep(self.folder, self.simulation, self.parameters['General'], self.device, 
                                               self.epsilon, self.vector_potential, self.current, seed)
@@ -84,57 +85,49 @@ class TDGLSimulation:
 
     @benchmark
     def plot_psi(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_psi documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_psi documentation.'''
         self.psi     = np.abs(self.solution.tdgl_data.psi)
         self.fig_psi = plot_psi(self.folder, self.device, self.psi)
         return None
 
     @benchmark
     def plot_phase(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_phase documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_phase documentation.'''
         self.phase     = np.angle(self.solution.tdgl_data.psi)
         self.fig_phase = plot_phase(self.folder, self.device, self.phase)
         return None
 
     @benchmark
     def plot_vorticity(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_vorticity documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_vorticity documentation.'''
         self.vorticity     = self.solution.vorticity.magnitude
-        ω_max              = np.max(np.abs(self.vorticity))
-        ω                  = (self.vorticity / ω_max) if ω_max > 0 else self.vorticity
-        self.fig_vorticity = plot_vorticity(self.folder, self.device, ω)
+        self.fig_vorticity = plot_vorticity(self.folder, self.device, self.vorticity)
         return None
 
     @benchmark
     def plot_normal_current(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_normal_current documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_normal_current documentation.'''
         self.normal_current     = np.linalg.norm(self.solution.normal_current_density.magnitude, axis=1)
-        Kn_max                  = np.max(self.normal_current)
-        Kn                      = (self.normal_current / Kn_max) if Kn_max > 0 else self.normal_current
-        self.fig_normal_current = plot_normal_current(self.folder, self.device, Kn)
+        self.fig_normal_current = plot_normal_current(self.folder, self.device, self.normal_current)
         return None
 
     @benchmark
     def plot_super_current(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_super_current documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_super_current documentation.'''
         self.super_current     = np.linalg.norm(self.solution.supercurrent_density.magnitude, axis=1)
-        Ks_max                 = np.max(self.super_current)
-        Ks                     = (self.super_current / Ks_max) if Ks_max > 0 else self.super_current
-        self.fig_super_current = plot_super_current(self.folder, self.device, Ks)
+        self.fig_super_current = plot_super_current(self.folder, self.device, self.super_current)
         return None
 
     @benchmark
     def plot_scalar_potential(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_scalar_potential documentation.'''
-        self.scalar_potential     = self.solution.tdgl_data.mu
-        μ_max                     = np.max(np.abs(self.scalar_potential))
-        μ                         = (self.scalar_potential / μ_max) if μ_max > 0 else self.scalar_potential
-        self.fig_scalar_potential = plot_scalar_potential(self.folder, self.device, μ)
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_scalar_potential documentation.'''
+        self.scalar_potential     = self.device.V0().to('mV').magnitude * self.solution.tdgl_data.mu
+        self.fig_scalar_potential = plot_scalar_potential(self.folder, self.device, self.scalar_potential)
         return None
 
     @benchmark
     def plot_current_voltage(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_current_voltage documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_current_voltage documentation.'''
         self.fig_current_voltage = plot_current_voltage(self.folder, self.current, self.voltages)
         return None
 
@@ -142,10 +135,4 @@ class TDGLSimulation:
     def compress(self):
         '''Read SuperCondTrans/libs/utils.py/compress documentation.'''
         compress(os.path.join(self.folder, 'Data'))
-        return None
-
-    @benchmark
-    def clean(self):
-        '''Read SuperCondTrans/libs/utils.py/clean documentation.'''
-        clean(self.folder)
         return None

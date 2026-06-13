@@ -8,28 +8,28 @@ Input files for the TDGL simulations. Contains general parameters (material, ext
 
 ```
 input/
-├── Input.in                          # General Parameters
+├── Input.in                   # General Parameters
 ├── Default/
 │   └── empty
 ├── Setup/
-│   ├── Device.h5                     # Device
-│   ├── Setup.h5                      # Setup
-│   ├── Device.png                    # Device Figure
-│   ├── Epsilon.png                   # Epsilon Figure
-│   ├── Magnetic_Field.png            # Magnetic Field Figure
-│   └── Vector_Potential.png          # Vector Potential Figure
+│   ├── Device.h5              # Device
+│   ├── Setup.h5               # Setup
+│   ├── Device.png             # Device Figure
+│   ├── Epsilon.png            # Epsilon Figure
+│   ├── Magnetic_Field.png     # Magnetic Field Figure
+│   └── Vector_Potential.png   # Vector Potential Figure
 ├── Epsilon/
-│   ├── Pinning.in                    # Pinning Parameters
-│   ├── NoPinning.in                  # No-Pinning Parameters
-│   └── Antipinning.in                # Antipinning Parameters
+│   ├── Pinning.in             # Pinning Parameters
+│   ├── NoPinning.in           # No-Pinning Parameters
+│   └── Antipinning.in         # Antipinning Parameters
 ├── Fields/
-│   ├── Uniform.in                    # Uniform Parameters
-│   ├── Plateau.in                    # Plateau Parameters
-│   └── Domains.in                    # Domains Parameters
+│   ├── Uniform.in             # Uniform Parameters
+│   ├── Plateau.in             # Plateau Parameters
+│   └── Domains.in             # Domains Parameters
 └── Current/
-    ├── Static.in                     # Zero Current
-    ├── Dynamic.in                    # Fixed Current
-    └── Sweep.in                      # Current Range
+    ├── Static.in              # Zero Current
+    ├── Dynamic.in             # Fixed Current
+    └── Sweep.in               # Current Range
 ```
 
 ## Parameters
@@ -42,7 +42,7 @@ input/
 | ------ | ------------------------------ | ----- | -------- | ------ |
 | `ξ0`   | Coherence Length at T = 0 K    | float | `0.0054` | μm     |
 | `λ0`   | Penetration Depth at T = 0 K   | float | `0.200`  | μm     |
-| `u0`   | Relaxation Parameter           | float | `5.79`   | n.u.   |
+| `u`    | Relaxation Parameter           | float | `5.79`   | n.u.   |
 | `γ`    | Inelastic Scattering Parameter | float | `1.0`    | n.u.   |
 | `σ`    | Normal Conductivity            | float | `1.0`    | S·μm⁻¹ |
 | `Lx`   | Length                         | float | `2.000`  | μm     |
@@ -56,8 +56,8 @@ input/
 | ---------- | ---------------------- | ----- | --------------------------------------- | ---- |
 | `T0`       | Working Temperature    | float | `15.80`                                 | K    |
 | `NPP`      | Number of Probe Points | int   | `20`                                    | n.u. |
-| `disorder` | Pinning Configuration  | str   | `'NoPinning'`/`'Pinning'`/`'Antinning'` | n.u. |
-| `dist`     | Pinning Distribution  | str   | `'Random'`/`'Square'`/`'Hexagonal'`     | n.u. |
+| `disorder` | Pinning Configuration  | str   | `'NoPinning'`/`'Pinning'`/`'Antipinning'` | n.u. |
+| `dist`     | Pinning Distribution   | str   | `'Random'`/`'Square'`/`'Hexagonal'`     | n.u. |
 | `profile`  | Magnetic Field Profile | str   | `'Uniform'`/`'Plateau'`/`'Domains'`     | n.u. |
 | `gauge`    | Vector Potential Gauge | str   | `'Landau-y'`/`'Landau-x'`/`'Rotated'`   | n.u. |
 
@@ -86,10 +86,10 @@ File: `./Input.in`
 
 | Symbol | Description              | Type  | Example  | Unit |
 | ------ | ------------------------ | ----- | -------- | ---- |
-| `N`    | Number of Antidots       | int   | `100`    | n.u. |
-| `R`    | Antidot Radius           | float | `0.0054` | μm   |
+| `N`    | Number of Antidots       | int   | `50`     | n.u. |
+| `R`    | Antidot Radius           | float | `0.010`  | μm   |
 | `σR`   | Antidot Radius Std. Dev. | float | `0.0`    | μm   |
-| `ε0`   | Suppression              | float | `0.0`    | n.u. |
+| `ε0`   | Suppression              | float | `-1.0`   | n.u. |
 | `σε`   | Suppression Std. Dev.    | float | `0.0`    | n.u. |
 | `seed` | Random Seed              | int   | `0`      | n.u. |
 

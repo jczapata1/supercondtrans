@@ -21,6 +21,7 @@ class TDGLSetup:
 
         # Primary
         self.folder = (folder or os.path.join('.', 'input', 'Default'))
+        clean(self.folder)
 
         # Secondary
         self.parameters           = None    
@@ -35,47 +36,36 @@ class TDGLSetup:
 
     @benchmark
     def set_parameters(self, file):
-        '''Read SuperCondTrans/Tdgl/programs/base/make.py/set_parameters documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/make.py/set_parameters documentation.'''
         self.parameters = set_parameters(file)
         return None
 
     @benchmark
     def make_setup(self):
-        '''Read SuperCondTrans/Tdgl/programs/base/make.py/make_setup documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/base/make.py/make_setup documentation.'''
         self.device, self.epsilon, self.magnetic_field, self.vector_potential = make_setup(self.folder, self.parameters)
         return None
 
     @benchmark
     def plot_device(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_device documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_device documentation.'''
         self.fig_device = plot_device(self.folder, self.device)
         return None
 
     @benchmark
     def plot_epsilon(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_epsilon documentation.'''
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_epsilon documentation.'''
         self.fig_epsilon = plot_epsilon(self.folder, self.device, self.epsilon)
         return None
 
     @benchmark
     def plot_magnetic_field(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_magnetic_field documentation.''' 
-        Bz_max                  = np.max(np.abs(self.magnetic_field))
-        Bz                      = (self.magnetic_field / Bz_max) if Bz_max > 0 else self.magnetic_field
-        self.fig_magnetic_field = plot_magnetic_field(self.folder, self.device, Bz)
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_magnetic_field documentation.''' 
+        self.fig_magnetic_field = plot_magnetic_field(self.folder, self.device, self.magnetic_field)
         return None
 
     @benchmark
     def plot_vector_potential(self):
-        '''Read SuperCondTrans/Tdgl/programs/post/plot.py/plot_vector_potential documentation.'''       
-        A                         = np.linalg.norm(self.vector_potential, axis=1)
-        A_max                     = np.max(A)
-        A_amp                     = (A / A_max) if A_max > 0 else A
-        self.fig_vector_potential = plot_vector_potential(self.folder, self.device, A_amp)
-        return None
-
-    @benchmark
-    def clean(self):
-        '''Read SuperCondTrans/libs/utils.py/clean documentation.'''
-        clean(self.folder)
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_vector_potential documentation.'''       
+        self.fig_vector_potential = plot_vector_potential(self.folder, self.device, self.vector_potential)
         return None

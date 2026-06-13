@@ -27,8 +27,8 @@ def benchmark(function):
         wrapper.time  = round(tf - ti, 2)          # Total Time
         class_name    = args[0].__class__.__name__ # Class Name
         function_name = function.__name__          # Function Name
-        print(f'{class_name:>14} - {function_name.title().replace('_', ' '):>21}: {wrapper.time:7.2f} s')
-        
+        print(f'{class_name:>16} - {function_name.title().replace('_', ' '):>21}: {wrapper.time:7.2f} s')
+
         return result
 
     return wrapper
