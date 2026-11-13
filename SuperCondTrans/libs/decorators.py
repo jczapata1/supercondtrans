@@ -16,6 +16,9 @@ def benchmark(function):
 
     Used by:
     - General Proposal
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Wrapper

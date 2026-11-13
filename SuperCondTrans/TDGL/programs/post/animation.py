@@ -1,9 +1,9 @@
 # Animation
-from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
+from programs.post.plot import plot_psi_squared, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
 from programs.utils import *
 from PIL import Image
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Snapshots
 def snapshots(path, n, plot, device, solution):
@@ -24,10 +24,13 @@ def snapshots(path, n, plot, device, solution):
 
     Used by:
     - tdgl_animation.TDGLAnimation.snapshots
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Validate
-    valid            = ['Psi', 'Phase', 'Vorticity', 'Normal_Current', 'Super_Current', 'Scalar_Potential']
+    valid            = ['Psi_Squared', 'Phase', 'Vorticity', 'Normal_Current', 'Super_Current', 'Scalar_Potential']
     selected_folders = valid if (plot == 'All') else ([plot] if isinstance(plot, str) else list(plot))
     invalid          = [subfolder for subfolder in selected_folders if subfolder not in valid]
     if (invalid): 
@@ -51,16 +54,16 @@ def snapshots(path, n, plot, device, solution):
         solution.solve_step = ti
 
         # Physical Observables
-        psi              = np.abs(solution.tdgl_data.psi)
+        psi_squared      = np.abs(solution.tdgl_data.psi)**2
         phase            = np.angle(solution.tdgl_data.psi)
         vorticity        = solution.vorticity.magnitude
         normal_current   = np.linalg.norm(solution.normal_current_density.magnitude, axis=1)
         super_current    = np.linalg.norm(solution.supercurrent_density.magnitude, axis=1)
-        scalar_potential = device.V0().to('mV').magnitude  * solution.tdgl_data.mu
+        scalar_potential = (1/4) * device.V0().to('mV').magnitude * solution.tdgl_data.mu
 
         # Plot
-        if ('Psi' in selected_folders): 
-            plot_psi(folders['Psi'], device, psi, show=False, filename=f'{i:04d}')
+        if ('Psi_Squared' in selected_folders): 
+            plot_psi_squared(folders['Psi_Squared'], device, psi_squared, show=False, filename=f'{i:04d}')
         if ('Phase' in selected_folders): 
             plot_phase(folders['Phase'], device, phase, show=False, filename=f'{i:04d}')
         if ('Vorticity' in selected_folders): 
@@ -74,7 +77,7 @@ def snapshots(path, n, plot, device, solution):
 
     return None
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Animate
 def animation(path, n):
@@ -91,6 +94,9 @@ def animation(path, n):
 
     Used by:
     - tdgl_animation.TDGLAnimation.animation
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Folders

@@ -22,10 +22,13 @@ def load_setup(path):
 
     Used by:
     - tdgl_simulation.TDGLSimulation.load_setup
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Paths
-    path1 = os.path.join(path, 'Device.h5') 
+    path1 = os.path.join('.', 'input', 'Device', 'Device.h5')
     path2 = os.path.join(path, 'Setup.h5')
 
     # Load
@@ -52,6 +55,9 @@ def load_parameters(path):
 
     Used by:
     - base.load.load_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Load
@@ -81,6 +87,10 @@ def load_device(path):
 
     Used by:
     - base.load.load_setup
+    - base.make.make_setup
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Load
@@ -103,6 +113,9 @@ def load_epsilon(path):
 
     Used by:
     - base.load.load_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Load
@@ -126,6 +139,9 @@ def load_magnetic_field(path):
 
     Used by:
     - base.load.load_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Load
@@ -150,6 +166,9 @@ def load_vector_potential(path, device):
 
     Used by:
     - base.load.load_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Load

@@ -1,16 +1,19 @@
 # TDGL Simulation
-from programs.post.plot import plot_psi, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
+from programs.post.plot import plot_psi_squared, plot_phase, plot_vorticity, plot_scalar_potential, plot_normal_current, plot_super_current, plot_current_voltage
 from programs.base.transport import set_current
 from programs.base.run import point, sweep
 from programs.base.load import load_setup
 from programs.utils import *
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # TDGL Simulation
 class TDGLSimulation:
     '''
     Simulation.
+
+    Last Updated:
+    - 09/11/2026
     '''
 
     def __init__(self, folder=None):
@@ -37,8 +40,8 @@ class TDGLSimulation:
         # Point
         self.solution             = None
         self.voltage              = None
-        self.psi                  = None
-        self.fig_psi              = None
+        self.psi_squared          = None
+        self.fig_psi_squared      = None
         self.phase                = None
         self.fig_phase            = None
         self.vorticity            = None
@@ -84,10 +87,10 @@ class TDGLSimulation:
         return None
 
     @benchmark
-    def plot_psi(self):
-        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_psi documentation.'''
-        self.psi     = np.abs(self.solution.tdgl_data.psi)
-        self.fig_psi = plot_psi(self.folder, self.device, self.psi)
+    def plot_psi_squared(self):
+        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_psi_squared documentation.'''
+        self.psi_squared     = np.abs(self.solution.tdgl_data.psi)**2
+        self.fig_psi_squared = plot_psi_squared(self.folder, self.device, self.psi_squared)
         return None
 
     @benchmark
@@ -121,7 +124,7 @@ class TDGLSimulation:
     @benchmark
     def plot_scalar_potential(self):
         '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_scalar_potential documentation.'''
-        self.scalar_potential     = self.device.V0().to('mV').magnitude * self.solution.tdgl_data.mu
+        self.scalar_potential     = (1/4) * self.device.V0().to('mV').magnitude * self.solution.tdgl_data.mu
         self.fig_scalar_potential = plot_scalar_potential(self.folder, self.device, self.scalar_potential)
         return None
 
@@ -129,10 +132,4 @@ class TDGLSimulation:
     def plot_current_voltage(self):
         '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_current_voltage documentation.'''
         self.fig_current_voltage = plot_current_voltage(self.folder, self.current, self.voltages)
-        return None
-
-    @benchmark
-    def compress(self):
-        '''Read SuperCondTrans/libs/utils.py/compress documentation.'''
-        compress(os.path.join(self.folder, 'Data'))
         return None

@@ -28,6 +28,9 @@ def point(path, simulation, parameters, device, ε, Axy, current, seed_solution)
     Used by:
     - tdgl_simulation.TDGLSimulation.point
     - base.run.sweep
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Parameters
@@ -76,6 +79,9 @@ def sweep(path, simulation, parameters, device, ε, Axy, currents, seed):
 
     Used by:
     - tdgl_simulation.TDGLSimulation.sweep
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Solutions and Voltages

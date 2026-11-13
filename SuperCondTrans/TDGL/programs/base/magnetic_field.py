@@ -18,6 +18,9 @@ def uniform(x, y, parameters):
 
     Used by:
     - base.make.make_magnetic_field
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Magnetic Field
@@ -44,6 +47,9 @@ def domains(x, y, parameters):
     Used by:
     - base.make.make_magnetic_field
     - base.magnetic_field.plateau
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Paramaters
@@ -77,6 +83,9 @@ def plateau(x, y, parameters):
 
     Used by:
     - base.make.make_magnetic_field 
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Magnetic Field

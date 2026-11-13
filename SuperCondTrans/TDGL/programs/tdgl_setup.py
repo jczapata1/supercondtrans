@@ -1,6 +1,6 @@
 # TDGL Setup
-from programs.post.plot import plot_device, plot_epsilon, plot_magnetic_field, plot_vector_potential
 from programs.base.make import set_parameters, make_setup
+from programs.post.plot import plot_epsilon, plot_magnetic_field, plot_vector_potential
 from programs.utils import *
 
 #------------------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,10 @@ from programs.utils import *
 # TDGL Setup
 class TDGLSetup:
     '''
-    Device, Epsilon, Magnetic Field, and Vector Potential.
+    Epsilon, Magnetic Field, and Vector Potential.
+
+    Last Updated:
+    - 08/11/2026
     '''
 
     def __init__(self, folder=None):
@@ -20,7 +23,7 @@ class TDGLSetup:
         '''
 
         # Primary
-        self.folder = (folder or os.path.join('.', 'input', 'Default'))
+        self.folder = (folder or os.path.join('.', 'output', 'Default'))
         clean(self.folder)
 
         # Secondary
@@ -29,7 +32,6 @@ class TDGLSetup:
         self.epsilon              = None
         self.magnetic_field       = None    
         self.vector_potential     = None
-        self.fig_device           = None
         self.fig_epsilon          = None
         self.fig_magnetic_field   = None
         self.fig_vector_potential = None
@@ -44,12 +46,6 @@ class TDGLSetup:
     def make_setup(self):
         '''Read SuperCondTrans/TDGL/programs/base/make.py/make_setup documentation.'''
         self.device, self.epsilon, self.magnetic_field, self.vector_potential = make_setup(self.folder, self.parameters)
-        return None
-
-    @benchmark
-    def plot_device(self):
-        '''Read SuperCondTrans/TDGL/programs/post/plot.py/plot_device documentation.'''
-        self.fig_device = plot_device(self.folder, self.device)
         return None
 
     @benchmark

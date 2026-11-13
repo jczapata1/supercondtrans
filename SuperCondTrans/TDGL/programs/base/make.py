@@ -3,6 +3,7 @@ from programs.base.magnetic_field import uniform, plateau, domains
 from programs.base.positions import random, square, hexagonal
 from programs.base.vector_potential import vector_potential
 from scipy.interpolate import LinearNDInterpolator
+from programs.base.load import load_device
 from tdgl.geometry import box
 from programs.utils import *
 import logging
@@ -11,6 +12,9 @@ import re
 
 # Logging
 logging.getLogger('tdgl').setLevel(logging.ERROR)
+
+# Warnings
+np.seterr(divide='ignore')
 
 #---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -28,6 +32,10 @@ def read_parameters(path):
     Used by:
     - base.make.set_parameters
     - base.transport.set_current
+    - tdgl_device.TDGLDevice.set_parameters
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Parameters
@@ -73,6 +81,9 @@ def set_parameters(path):
 
     Used by:
     - tdgl_setup.TDGLSetup.set_parameters
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Parameters
@@ -88,7 +99,7 @@ def set_parameters(path):
 # Make Setup
 def make_setup(path, parameters):
     '''
-    Compute device, epsilon, magnetic field, and vector potential.
+    Load the device, then compute epsilon, magnetic field, and vector potential.
 
     Input:
     -                           path (str): Output Folder Path
@@ -99,35 +110,38 @@ def make_setup(path, parameters):
     -       ε (float, numpy.ndarray[?, 1]): Epsilon Profile
     -      Bz (float, numpy.ndarray[?, 1]): z-Magnetic Field
     -     Axy (float, numpy.ndarray[?, 2]): xy-Vector Potential
-    - Device.h5
     - Setup.h5
 
     Used by:
     - tdgl_setup.TDGLSetup.make_setup
+
+    Last Updated:
+    - 08/11/2026
     '''
 
     # Parameters
     parameters['Epsilon']['Lx']             = parameters['General']['Lx']
     parameters['Epsilon']['Ly']             = parameters['General']['Ly']
     parameters['Epsilon']['dist']           = parameters['General']['dist']
+    parameters['Epsilon']['TC']             = parameters['General']['TC']
+    parameters['Epsilon']['T0']             = parameters['General']['T0']
+    parameters['Epsilon']['TM']             = parameters['General']['TM']
     parameters['Magnetic_Field']['profile'] = parameters['General']['profile']
     parameters['Magnetic_Field']['gauge']   = parameters['General']['gauge']
 
     # Make
-    device = make_device(path, parameters['General'])
+    device = load_device(os.path.join('.', 'input', 'Device', 'Device.h5'))
     ε      = make_epsilon(path, parameters['Epsilon'], device)
     Bz     = make_magnetic_field(path, parameters['Magnetic_Field'], device)
     Axy    = make_vector_potential(path, parameters['Magnetic_Field'], device, Bz)
 
     # Save
-    device.to_hdf5(os.path.join(path, 'Device.h5'))
-    
     with h5py.File(os.path.join(path, 'Setup.h5'), 'w') as file:
 
         # Profiles
         group = file.create_group('Profiles')
-        group.create_dataset('ε',   data=ε)
-        group.create_dataset('Bz',  data=Bz)
+        group.create_dataset('ε', data=ε)
+        group.create_dataset('Bz', data=Bz)
         group.create_dataset('Axy', data=Axy)
 
         # Parameters
@@ -153,14 +167,18 @@ def make_device(path, parameters):
 
     Output:
     -              device (tdgl.Device): TDGL Device
+    - Device.h5
 
     Used by:
-    - base.make.make_setup
+    - tdgl_device.TDGLDevice.make_device
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Parameters
-    ξ   = parameters['ξ']
-    λ   = parameters['λ']
+    ξM  = parameters['ξM']
+    λM  = parameters['λM']
     u   = parameters['u']
     γ   = parameters['γ']
     σ   = parameters['σ']
@@ -170,10 +188,10 @@ def make_device(path, parameters):
     NPP = parameters['NPP']
 
     # Geometry and Boundaries
-    layer  = tdgl.Layer(coherence_length=ξ, london_lambda=λ, thickness=Lz, u=u, gamma=γ, conductivity=σ)
+    layer  = tdgl.Layer(coherence_length=ξM, london_lambda=λM, thickness=Lz, u=u, gamma=γ, conductivity=σ)
     film   = tdgl.Polygon('film', points=box(Lx, Ly))
-    source = tdgl.Polygon('source', points=box(ξ, Ly)).translate(dx=-Lx/2)
-    drain  = tdgl.Polygon('drain', points=box(ξ, Ly)).translate(dx=+Lx/2)
+    source = tdgl.Polygon('source', points=box(ξM, Ly)).translate(dx=-Lx/2)
+    drain  = tdgl.Polygon('drain', points=box(ξM, Ly)).translate(dx=+Lx/2)
 
     # Probe Points
     line         = np.linspace(-Ly/3, Ly/3, NPP)
@@ -181,7 +199,10 @@ def make_device(path, parameters):
 
     # Device and Mesh
     device = tdgl.Device('rectangular_film', layer=layer, film=film, terminals=[source, drain], probe_points=probe_points, length_units='um')
-    device.make_mesh(max_edge_length=ξ/2)
+    device.make_mesh(max_edge_length=ξM/2)
+
+    # Save
+    device.to_hdf5(os.path.join(path, 'Device.h5'))
 
     return device
 
@@ -202,48 +223,61 @@ def make_epsilon(path, parameters, device):
 
     Used by:
     - base.make.make_setup
+
+    Last Updated:
+    - 08/11/2026
     '''
 
     # Parameters
     Lx   = parameters['Lx']
     Ly   = parameters['Ly']
     dist = parameters['dist']
+    TC   = parameters['TC']
+    T0   = parameters['T0']
+    TM   = parameters['TM']
     N    = parameters['N']
     R    = parameters['R']
     σR   = parameters['σR']
-    ε0   = parameters['ε0']
-    σε   = parameters['σε']
-    seed = parameters['seed']   
+    TD   = parameters['TD']
+    σTD  = parameters['σTD']
+    seed = parameters['seed']
 
     # Mesh
     points = device.points
     X, Y   = points[:, 0], points[:, 1]
 
-    # No Pinning
-    if (N == 0): return 1
+    # Critical Temperature
+    Tc = np.full(X.shape, TC)
 
-    # Random State
-    rng = np.random.default_rng(seed)
+    # Defects
+    if (N > 0):
 
-    # Positions
-    if (dist == 'Random'):
-        Xp, Yp = random(Lx, Ly, N, rng)
-    elif (dist == 'Square'):
-        Xp, Yp = square(Lx, Ly, N)
-    elif (dist == 'Hexagonal'):
-        Xp, Yp = hexagonal(Lx, Ly, N)
-    else:
-        raise ValueError("Invalid Distribution!. Use 'Random', 'Square', or 'Hexagonal'.")
+        # Random State
+        rng = np.random.default_rng(seed)
 
-    # Disorder
-    r = rng.lognormal(np.log(R), σR, Xp.shape)
-    ε = rng.normal(ε0, σε, Xp.shape)
-    ε = np.clip(ε, -1.0, max(ε0, 1.0))
+        # Positions
+        if (dist == 'Random'):
+            Xp, Yp = random(Lx, Ly, N, rng)
+        elif (dist == 'Square'):
+            Xp, Yp = square(Lx, Ly, N)
+        elif (dist == 'Hexagonal'):
+            Xp, Yp = hexagonal(Lx, Ly, N)
+        else:
+            raise ValueError("Invalid Distribution!. Use 'Random', 'Square', or 'Hexagonal'.")
+
+        # Disorder
+        r   = rng.lognormal(np.log(R), σR, Xp.shape)
+        TDs = rng.normal(TD, σTD, Xp.shape)
+        TDs = np.clip(TDs, 0.0, None)
+
+        # Critical Temperature
+        d     = np.sqrt((Xp - X)**2 + (Yp - Y)**2)
+        gauss = (TDs - TC) * np.exp(-(d**2 / (2*r**2)))
+        Tc    = np.clip(TC + gauss.sum(axis=0), 0.0, None)
 
     # Epsilon
-    d     = np.sqrt((Xp - X)**2 + (Yp - Y)**2)
-    gauss = (ε - 1) * np.exp(-(d**2 / (2*r**2)))
-    ε     = np.clip(1 + gauss.sum(axis=0), -1.0, max(float(ε0), 1.0))
+    ε = (1 - (T0/Tc)**2) / (1 - (TM/TC)**2)
+    ε = np.clip(ε, -1.0, None)
 
     return ε
 
@@ -264,6 +298,9 @@ def make_magnetic_field(path, parameters, device):
 
     Used by:
     - base.make.make_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Parameters
@@ -303,6 +340,9 @@ def make_vector_potential(folder, parameters, device, Bz):
 
     Used by:
     - base.make.make_setup
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Mesh

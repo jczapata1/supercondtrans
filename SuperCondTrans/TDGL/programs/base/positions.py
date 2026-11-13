@@ -20,6 +20,9 @@ def random(Lx, Ly, N, rng):
 
     Used by:
     - base.make.make_epsilon
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Positions
@@ -47,6 +50,9 @@ def square(Lx, Ly, N):
     
     Used by:
     - base.make.make_epsilon
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Parameters
@@ -81,6 +87,9 @@ def hexagonal(Lx, Ly, N):
 
     Used by:
     - base.make.make_epsilon
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Parameters

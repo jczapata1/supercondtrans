@@ -17,6 +17,9 @@ def clean(path):
 
     Used by:
     - General Proposal
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     shutil.rmtree(path, ignore_errors=True) # Delete Folder
@@ -40,7 +43,10 @@ def compress(path):
 
     Used by:
     - General Proposal
-    '''   
+
+    Last Updated:
+    - 01/08/2026
+    '''
 
     shutil.make_archive(path, 'zip', path)  # Folder to ZIP
     shutil.rmtree(path, ignore_errors=True) # Delete Folder

@@ -17,6 +17,9 @@ def set_current(path):
 
     Used by:
     - tdgl_simulation.TDGLSimulation.set_current
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Parameters
@@ -45,10 +48,13 @@ def get_voltage(solution):
 
     Used by:
     - base.run.point
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Voltage
-    V0       = solution.device.V0().to('mV').magnitude                      # Scale
+    V0       = (1/4) * solution.device.V0().to('mV').magnitude              # Scale
     N        = len(solution.device.probe_points) // 2                       # Points
     dynamics = solution.dynamics                                            # Dynamics
     time     = dynamics.time[-1] / 2                                        # Time
@@ -76,6 +82,9 @@ def save_transport(path, current, voltage):
     Used by:
     - base.run.point
     - base.run.sweep
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Save

@@ -31,6 +31,9 @@ def vector_potential(Bz_func, points, gauge):
 
     Used by:
     - base.make.make_vector_potential
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     # Auxiliary Grid

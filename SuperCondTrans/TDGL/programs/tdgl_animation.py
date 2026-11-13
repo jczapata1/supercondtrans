@@ -2,12 +2,15 @@
 from programs.post.animation import snapshots, animation
 from programs.utils import *
 
-#-----------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------
 
 # TDGL Animation
 class TDGLAnimation:
     '''
     Animation.
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     def __init__(self, folder=None):

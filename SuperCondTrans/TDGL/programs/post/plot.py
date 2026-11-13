@@ -18,15 +18,18 @@ def plot_device(path, device, show=True, filename='Device'):
     - fig (matplotlib.figure.Figure): Device Figure
 
     Used by:
-    - tdgl_setup.TDGLSetup.plot_device
+    - tdgl_device.TDGLDevice.plot_device
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     device.plot(mesh=True, legend=False, ax=ax)
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
     ax.set_title('Mesh')
     ax.set_aspect('equal')
 
@@ -37,7 +40,7 @@ def plot_device(path, device, show=True, filename='Device'):
 
     return fig
 
-#--------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plot Epsilon
 def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
@@ -56,6 +59,9 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
 
     Used by:
     - tdgl_setup.TDGLSetup.plot_epsilon
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Mesh
@@ -71,8 +77,8 @@ def plot_epsilon(path, device, epsilon, show=True, filename='Epsilon'):
 
     im = ax.tripcolor(X, Y, ε, triangles=tri, cmap=cmap_eps, vmin=0, vmax=2)
     fig.colorbar(im, ax=ax, label='$\\varepsilon(x,y)$', pad=0.02, shrink=0.6, ticks=[0, 1, 2])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
     ax.set_title('Epsilon')
     ax.set_aspect('equal')
 
@@ -102,6 +108,9 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
 
     Used by:
     - tdgl_setup.TDGLSetup.plot_magnetic_field
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -117,10 +126,10 @@ def plot_magnetic_field(path, device, magnetic_field, show=True, filename='Magne
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, Bz, triangles=tri, cmap=cmap_magfield, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$B_{z}(x,y)/B^{max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Magnetic Field - $B^{{max}}={Bz_max:0.1f}$ mT')
+    fig.colorbar(im, ax=ax, label='$B_{z}(x,y)/B_{Max}$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Magnetic Field - $B_{{Max}}={Bz_max:0.1f}$ mT')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -149,6 +158,9 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
 
     Used by:
     - tdgl_setup.TDGLSetup.plot_vector_potential
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -165,10 +177,10 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, A_amp, triangles=tri, cmap=cmap_vecpot, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\vec{A}(x,y)|/A^{max}$', pad=0.02, shrink=0.6, ticks=[0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Vector Potential - $A^{{max}}={A_max:0.1f}$ mT·µm')
+    fig.colorbar(im, ax=ax, label='$|\\vec{A}(x,y)|/A_{Max}$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Vector Potential - $A_{{Max}}={A_max:0.1f}$ mT$\\cdot\\mu$m')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -180,24 +192,27 @@ def plot_vector_potential(path, device, vector_potential, show=True, filename='V
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# Plot Psi
-def plot_psi(path, device, psi, show=True, filename='Psi'):
+# Plot Psi Squared
+def plot_psi_squared(path, device, psi_squared, show=True, filename='Psi_Squared'):
     '''
-    Plot the order parameter magnitude profile.
+    Plot the squared order parameter magnitude profile.
 
     Input:
-    -                       path (str): Output Folder Path
-    -             device (tdgl.Device): TDGL Device
-    - psi (float, numpy.ndarray[?, 1]): Order Parameter Magnitude
-    -                      show (bool): Show Plot
-    -                   filename (str): Output Filename
+    -                               path (str): Output Folder Path
+    -                     device (tdgl.Device): TDGL Device
+    - psi_squared (float, numpy.ndarray[?, 1]): Squared Order Parameter Magnitude
+    -                              show (bool): Show Plot
+    -                           filename (str): Output Filename
 
     Output:
-    -   fig (matplotlib.figure.Figure): Order Parameter Magnitude Figure
+    -   fig (matplotlib.figure.Figure): Squared Order Parameter Magnitude Figure
 
     Used by:
-    - tdgl_simulation.TDGLSimulation.plot_psi
+    - tdgl_simulation.TDGLSimulation.plot_psi_squared
     - post.animation.snapshots
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Mesh
@@ -206,16 +221,16 @@ def plot_psi(path, device, psi, show=True, filename='Psi'):
     X, Y   = points[:, 0], points[:, 1]
 
     # Profile
-    Ψ = psi
+    Ψ2 = psi_squared
 
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
-    im = ax.tripcolor(X, Y, Ψ, triangles=tri, cmap=cmap_psi, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\psi(x,y,t)|$', pad=0.02, shrink=0.6, ticks=[0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title('Psi')
+    im = ax.tripcolor(X, Y, Ψ2, triangles=tri, cmap=cmap_psi_squared, vmin=0, vmax=1)
+    fig.colorbar(im, ax=ax, label='$|\\psi(x,y,t)|^2$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title('Psi Squared')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -245,6 +260,9 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_phase
     - post.animation.snapshots
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Mesh
@@ -261,8 +279,8 @@ def plot_phase(path, device, phase, show=True, filename='Phase'):
     im = ax.tripcolor(X, Y, φ, triangles=tri, cmap=cmap_phase, vmin=-π, vmax=π)
     cbar = fig.colorbar(im, ax=ax, label='$\\varphi(x,y,t)$', pad=0.02, shrink=0.6, ticks=[-π, 0, π])
     cbar.set_ticklabels(['$-\\pi$', '$0$', '$\\pi$'])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
     ax.set_title('Phase')
     ax.set_aspect('equal')
 
@@ -293,6 +311,9 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_vorticity
     - post.animation.snapshots
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -308,10 +329,10 @@ def plot_vorticity(path, device, vorticity, show=True, filename='Vorticity'):
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, ω, triangles=tri, cmap=cmap_vort, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega^{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Vorticity - $\\omega^{{max}}(t)={ω_max:0.1f}$ µA/µm²')
+    fig.colorbar(im, ax=ax, label='$|\\omega(x,y,t)|/\\omega_{Max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Vorticity - $\\omega_{{Max}}(t)={ω_max:0.1f}$ $\\mu$A/$\\mu$m$^{2}$')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -341,6 +362,9 @@ def plot_normal_current(path, device, normal_current, show=True, filename='Norma
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_normal_current
     - post.animation.snapshots
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -357,10 +381,10 @@ def plot_normal_current(path, device, normal_current, show=True, filename='Norma
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, Kn_log, triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{n}(x,y,t)|}{K_{n}^{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Normal Current Density - $K_{{n}}^{{max}}(t)$={Kn_max:0.1f} µA/µm')
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{n}(x,y,t)|}{K_{n}^{Max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Normal Current Density - $K_{{n}}^{{Max}}(t)$={Kn_max:0.1f} $\\mu$A/$\\mu$m')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -390,6 +414,9 @@ def plot_super_current(path, device, super_current, show=True, filename='Supercu
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_super_current
     - post.animation.snapshots
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -406,10 +433,10 @@ def plot_super_current(path, device, super_current, show=True, filename='Supercu
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, Ks_log, triangles=tri, cmap=cmap_current, vmin=0, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{s}(x,y,t)|}{K_{s}^{max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Supercurrent Density - $K_{{s}}^{{max}}(t)$={Ks_max:0.1f} µA/µm')
+    fig.colorbar(im, ax=ax, label='$\\log\\left(1+\\frac{|K_{s}(x,y,t)|}{K_{s}^{Max}(t)}\\right)/\\log(2)$', pad=0.02, shrink=0.6, ticks=[0, 1])
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Supercurrent Density - $K_{{s}}^{{Max}}(t)$={Ks_max:0.1f} $\\mu$A/$\\mu$m')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -439,6 +466,9 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_scalar_potential
     - post.animation.snapshots
+
+    Last Updated:
+    - 07/11/2026
     '''
 
     # Mesh
@@ -457,12 +487,12 @@ def plot_scalar_potential(path, device, scalar_potential, show=True, filename='S
     fig, ax = plt.subplots(1, 1, figsize=(9, 2))
 
     im = ax.tripcolor(X, Y, μ, triangles=tri, cmap=cmap_scapot, vmin=-1, vmax=1)
-    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu^{max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
+    fig.colorbar(im, ax=ax, label='$\\mu(x,y,t)/\\mu_{Max}(t)$', pad=0.02, shrink=0.6, ticks=[-1, 0, 1])
     ax.add_patch(plt.Rectangle((-Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
     ax.add_patch(plt.Rectangle((Lx/3 - w/2, -Ly/3), w, 2*Ly/3, color='black'))
-    ax.set_xlabel('$x$ [μm]'); ax.set_xticks([])
-    ax.set_ylabel('$y$ [μm]'); ax.set_yticks([])
-    ax.set_title(f'Scalar Potential - $\\mu^{{max}}(t)$={μ_max:0.3f} mV')
+    ax.set_xlabel('$x$ [$\\mu$m]'); ax.set_xticks([])
+    ax.set_ylabel('$y$ [$\\mu$m]'); ax.set_yticks([])
+    ax.set_title(f'Scalar Potential - $\\mu_{{Max}}(t)$={μ_max:0.3f} mV')
     ax.set_aspect('equal')
 
     # Save, Show, and Close
@@ -491,13 +521,16 @@ def plot_current_voltage(path, currents, voltages, show=True, filename='Current_
 
     Used by:
     - tdgl_simulation.TDGLSimulation.plot_current_voltage
+
+    Last Updated:
+    - 06/11/2026
     '''
 
     # Figure
     fig, ax = plt.subplots(1, 1, figsize=(3, 2))
 
     ax.plot(currents, voltages, '-o', color='gray', linewidth=lw_, markerfacecolor='white', markeredgecolor='gray', markeredgewidth=me_, markersize=ms_)
-    ax.set_xlabel('Current [μA]')
+    ax.set_xlabel('Current [$\\mu$A]')
     ax.set_ylabel('Voltage [mV]')
 
     # Save, Show, and Close

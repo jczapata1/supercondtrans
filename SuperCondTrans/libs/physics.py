@@ -18,6 +18,9 @@ def scaling_func(n, m, TC, T):
 
     Used by:
     - General Proposal
+
+    Last Updated:
+    - 01/08/2026
     '''
 
     f = 1.0 / (1.0 - (T/TC)**n)**m
