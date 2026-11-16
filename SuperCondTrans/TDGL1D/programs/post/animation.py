@@ -3,7 +3,7 @@ from programs.post.plot import plot
 from programs.utils import *
 from PIL import Image
 
-#-----------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------------------
 
 # Snapshots
 def snapshots(path, n, solution):
@@ -22,6 +22,9 @@ def snapshots(path, n, solution):
 
     Used by:
     - tdgl1d_animation.TDGL1DAnimation.snapshots
+
+    Last Updated:
+    - 13/11/2026
     '''
 
     # Make Folder
@@ -43,7 +46,7 @@ def snapshots(path, n, solution):
 
     return None
 
-#-----------------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------------------------
 
 # Animation
 def animation(path, n):
@@ -60,6 +63,9 @@ def animation(path, n):
 
     Used by:
     - tdgl1d_animation.TDGL1DAnimation.animation
+
+    Last Updated:
+    - 16/11/2026
     '''
 
     # Folder
@@ -67,7 +73,7 @@ def animation(path, n):
 
     # Animate
     frames = [Image.open(os.path.join(folder, f'{i:04d}.{img_fmt}')) for i in range(n)]
-    frames[0].save(os.path.join(path, 'Psi_Vortex.gif'), save_all=True, append_images=frames[1:], duration=200, loop=0)
+    frames[0].save(os.path.join(path, 'Psi_Squared_Vortex.gif'), save_all=True, append_images=frames[1:], duration=200, loop=0)
 
     # Delete
     shutil.rmtree(folder)

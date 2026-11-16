@@ -9,6 +9,7 @@ __pycache__/
 # Data
 *.h5
 !SuperCondTrans/TDGL/input/Device/Device.h5
+!SuperCondTrans/TDGL1D/output/Simulation.h5
 *.zip
 
 # Claude
@@ -16,8 +17,9 @@ __pycache__/
 CLAUDE.md
 
 # Internal Info
-SuperCondTrans/TDGL/dev/
 SuperCondTrans/libs/dev/
+SuperCondTrans/TDGL/dev/
+SuperCondTrans/TDGL1D/dev/
 
 # Future
 SuperCondTrans/Current-Voltage/

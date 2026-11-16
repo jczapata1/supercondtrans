@@ -2,7 +2,7 @@
 
 > Input files for the TDGL simulations. Contains general parameters (material, external, derived, and solver), the device setup, pinning configurations, magnetic field and vector potential profiles, and transport current settings.
 > 
-> Last Updated: 13/11/2026
+> Last Updated: 16/11/2026
 
 ---
 
@@ -36,8 +36,8 @@ input/
 
 | Symbol | Description                    | Type  | Example  | Unit   |
 |:------:|:------------------------------:|:-----:|:--------:|:------:|
-| `ξ0`   | Coherence Length at T = 0 K    | float | `0.0054` | μm     |
-| `λ0`   | Penetration Depth at T = 0 K   | float | `0.200`  | μm     |
+| `ξ0`   | Coherence Length at $T=0$ K    | float | `0.0054` | μm     |
+| `λ0`   | Penetration Depth at $T=0$ K   | float | `0.200`  | μm     |
 | `u`    | Relaxation Parameter           | float | `5.79`   | n.u.   |
 | `γ`    | Inelastic Scattering Parameter | float | `1.0`    | n.u.   |
 | `σ`    | Normal Conductivity            | float | `1.0`    | S·μm⁻¹ |
@@ -60,10 +60,10 @@ input/
 
 **Derived:**
 
-| Symbol | Description             | Type  | Expression                                                         | Unit |
-|:------:|:-----------------------:|:-----:|:------------------------------------------------------------------:|:----:|
-| `ξM`   | Coherence Length at TM  | float | $\xi_0 \left[1 - \left(\frac{T_M}{T_C}\right)^2\right]^{-1/2}$     | μm   |
-| `λM`   | Penetration Depth at TM | float | $\lambda_0 \left[1 - \left(\frac{T_M}{T_C}\right)^2\right]^{-1/2}$ | μm   |
+| Symbol | Description                           | Type  | Expression                                                                           | Unit |
+|:------:|:-------------------------------------:|:-----:|:------------------------------------------------------------------------------------:|:----:|
+| `ξM`   | Coherence Length at $T=T_{\text{M}}$  | float | $\xi_0 \left[1 - \left(\frac{T_{\text{M}}}{T_{\text{c}}}\right)^2\right]^{-1/2}$     | μm   |
+| `λM`   | Penetration Depth at $T=T_{\text{M}}$ | float | $\lambda_0 \left[1 - \left(\frac{T_{\text{M}}}{T_{\text{c}}}\right)^2\right]^{-1/2}$ | μm   |
 
 **Solver:**
 

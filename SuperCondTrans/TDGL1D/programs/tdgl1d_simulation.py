@@ -10,6 +10,9 @@ from programs.utils import *
 class TDGL1DSimulation:
     '''
     Simulation.
+
+    Last Updated:
+    - 13/11/2026
     '''
 
     def __init__(self, folder=None):

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/Version-1.5.0-brightgreen.svg)
+![Version](https://img.shields.io/badge/Version-1.6.0-brightgreen.svg)
 ![Python](https://img.shields.io/badge/Python-3.14%2B-blue.svg?logo=python&logoColor=white)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-26.04-E95420.svg?logo=ubuntu&logoColor=white)
 
@@ -42,6 +42,7 @@ pip install -r requirements.txt
 * v1.3.0: TDGL Module → Plots and Readme Upgrades (06/13/2026).
 * v1.4.4: TDGL1D Module → Base Code (06/13/2026).
 * v1.5.0: TDGL Module → Upgrade + Device/Setup + Temperature (11/13/2026).
+* v1.6.0: TDGL and TDGL1D Modules → Upgrade (11/16/2026).
 
 ## Copyright and License
 

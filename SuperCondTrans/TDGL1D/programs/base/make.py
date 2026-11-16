@@ -17,6 +17,9 @@ def read_parameters(path):
 
     Used by:
     - tdgl1d_simulation.TDGL1DSimulation.read_parameters
+
+    Last Updated:
+    - 13/11/2026
     '''
 
     # Parameters
@@ -66,6 +69,9 @@ def make_vortex(parameters, t, y):
 
     Used by:
     - base.run.run
+
+    Last Updated:
+    - 13/11/2026
     '''
 
     # Parameters

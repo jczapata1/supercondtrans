@@ -12,6 +12,9 @@ class TDGL1D:
     class Solution:
         '''
         Solution.
+
+        Last Updated:
+        - 13/11/2026
         '''
 
         def __init__(self, grid, psi, vortex, times):
@@ -58,6 +61,9 @@ def run(path, parameters):
 
     Used by:
     - tdgl1d_simulation.TDGL1DSimulation.run
+
+    Last Updated:
+    - 13/11/2026
     '''
 
     # Parameters

@@ -3,7 +3,7 @@ from scipy.interpolate import RegularGridInterpolator
 from scipy.integrate import cumulative_trapezoid
 import numpy as np
 
-#------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------
 
 # Vector Potential
 def vector_potential(Bz_func, points, gauge):
@@ -11,10 +11,12 @@ def vector_potential(Bz_func, points, gauge):
     2D vector potential A(x,y) from a magnetic field Bz(x,y).
 
         Gauges:
-        -                              'Landau-y' →  Ay = 0, Ax(x,y) = -∫_{y0}^{y} Bz(x,y') dy', y0 = midpoint
-        -                              'Landau-x' →  Ax = 0, Ay(x,y) =  ∫_{x0}^{x} Bz(x',y) dx', x0 = midpoint
-        -                               'Rotated' → Ay' = 0, Ax'(x',y') = -∫_{y0'}^{y'} Bz(x',y'') dy'', y0' = midpoint,
-                                                      θ = arctan(⟨|∂Bz/∂y|⟩/⟨|∂Bz/∂x|⟩), Ax = cos(θ)Ax', Ay = sin(θ)Ax'
+        -                              'Landau-y' →     Ay = 0, Ax(x,y) = -∫_{y0}^{y} Bz(x,y') dy', y0 = midpoint
+        -                              'Landau-x' →     Ax = 0, Ay(x,y) =  ∫_{x0}^{x} Bz(x',y) dx', x0 = midpoint
+        -                               'Rotated' →     Ax = -sin(θ)G(u) - ∫_{y0}^{y} R(x,y') dy', Ay = cos(θ)G(u)
+                                                      G(u) = ∫_{0}^{u} Bz(u') du', u = (x-x0)cos(θ) + (y-y0)sin(θ)
+                                                    R(x,y) = Bz(x,y) - Bz(u), (x0,y0) = midpoint
+                                                         θ = ½ arctan(2⟨∂xBz*∂yBz⟩/(⟨(∂xBz)²⟩-⟨(∂yBz)²⟩))
 
         Gauge Selection:
         -                              Bz = Bz(y) → 'Landau-y' (Uniform, Plateau, and Domains θ=0)
@@ -33,7 +35,7 @@ def vector_potential(Bz_func, points, gauge):
     - base.make.make_vector_potential
 
     Last Updated:
-    - 01/08/2026
+    - 16/11/2026
     '''
 
     # Auxiliary Grid
@@ -63,22 +65,30 @@ def vector_potential(Bz_func, points, gauge):
         
     elif (gauge == 'Rotated'):
 
-        # Rotate
+        # Gradient Direction
         dBz_dx = np.gradient(Bz, x, axis=0)
         dBz_dy = np.gradient(Bz, y, axis=1)
-        θ      = np.arctan2(np.mean(np.abs(dBz_dy)), np.mean(np.abs(dBz_dx)))
-        X_r    =  np.cos(θ) * X + np.sin(θ) * Y
-        Y_r    = -np.sin(θ) * X + np.cos(θ) * Y
-        Bz_r   = Bz_func(X_r, Y_r)
+        θ      = 0.5 * np.arctan2(2.0*np.mean(dBz_dx*dBz_dy), np.mean(dBz_dx**2) - np.mean(dBz_dy**2))
+
+        # Profile (Across Stripes)
+        x0, y0 = 0.5*(x_min + x_max), 0.5*(y_min + y_max)
+        u      = np.cos(θ) * (X - x0) + np.sin(θ) * (Y - y0)
+        u1     = np.linspace(u.min(), u.max(), 4*max(Nx, Ny))
+        Bz_u   = Bz_func(x0 + np.cos(θ)*u1, y0 + np.sin(θ)*u1)
 
         # Integration
-        Ax_r = -cumulative_trapezoid(Bz_r, y, axis=1, initial=0)
-        Ax_r = Ax_r - Ax_r[:, Ny//2:Ny//2+1]
-        Ay_r = np.zeros_like(Ax_r)
+        G_u = cumulative_trapezoid(Bz_u, u1, initial=0)
+        G_u = G_u - np.interp(0.0, u1, G_u)
+        G   = np.interp(u, u1, G_u)
 
-        # Rotate Back
-        Ax = np.cos(θ) * Ax_r
-        Ay = np.sin(θ) * Ax_r
+        # Vector Potential (Along Stripes)
+        Ax = -np.sin(θ) * G
+        Ay =  np.cos(θ) * G
+
+        # Residual Field
+        R  = Bz - np.interp(u, u1, Bz_u)
+        AR = -cumulative_trapezoid(R, y, axis=1, initial=0)
+        Ax = Ax + AR - AR[:, Ny//2:Ny//2+1]
 
     else:
         raise ValueError(f"Unknown Gauge!. Use 'Landau-y', 'Landau-x', or 'Rotated'.")
